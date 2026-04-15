@@ -16,7 +16,7 @@ public class App
         options.addArguments("--disable-gpu");
         options.addArguments("--window-size=1920,1080"); // optional but useful
 
-        WebDriver driver = new ChromeDriver();
+        WebDriver driver = new ChromeDriver(options);
 
         try {
             driver.get("https://automationexercise.com/");
