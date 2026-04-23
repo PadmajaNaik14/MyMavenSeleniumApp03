@@ -1,16 +1,10 @@
 pipeline {
-    agent any  
+    agent any  // Use any available agent
 
     tools {
-        maven 'Maven'
+        maven 'Maven'  // Ensure this matches the name configured in Jenkins
     }
-
-    environment {
-        JAR_FILE = "target/MyMavenSeleniumApp03-1.0-SNAPSHOT.jar"
-    }
-
     stages {
-
         stage('Checkout') {
             steps {
                 git branch: 'master', url: 'https://github.com/PadmajaNaik14/MyMavenSeleniumApp03.git'
@@ -19,50 +13,35 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mvn clean compile'
+                sh 'mvn clean package'  // Run Maven build
             }
         }
 
         stage('Test') {
             steps {
-                sh 'mvn test'
+                sh 'mvn test'  // Run unit tests
             }
         }
 
-        stage('Package') {
-            steps {
-                sh 'mvn package -DskipTests'
-            }
-        }
-
-        stage('Verify JAR') {
-            steps {
-                sh '''
-                echo "Current directory:"
-                pwd
-
-                echo "Files in target folder:"
-                ls -l target/
-                '''
-            }
-        }
-
+        
+        
+       
         stage('Run Application') {
             steps {
-                sh '''
-                echo "Starting application..."
-                nohup java -jar target/MyMavenSeleniumApp03-1.0-SNAPSHOT.jar > app.log 2>&1 &
-                '''
+                // Start the JAR application
+                sh 'mvn exec:java -Dexec.mainClass="com.example.App"'
             }
         }
+
+        
     }
 
     post {
         success {
-            echo 'Build and deployment successful! 🎉'
+            echo 'Build and deployment successful!'
         }
         failure {
-            echo 'Build failed! ❌'
+            echo 'Build failed!'
         }
     }
 }
